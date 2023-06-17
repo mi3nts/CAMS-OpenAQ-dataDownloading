@@ -8,7 +8,7 @@ import pandas as pd
 
 start_date = datetime.datetime(2020, 10, 1, 2)
 end_date = datetime.datetime(2020, 10, 1, 4)
-data_save_path = '/Users/prabu/Desktop/check_openAQ/data/'
+data_save_path = './data/'
 
 
 current_date = start_date
@@ -18,6 +18,7 @@ country_code = api.countries(limit=10000, df=True)
 country_names = country_code['code'].tolist()
 filtered_country_list = [item for item in country_names if item != '']
 # filtered_country_list = ['US', 'IN']
+measured_timedelta = 1 # hours
 
 
 def dataDownload(path, crt, old):
@@ -34,8 +35,8 @@ def dataDownload(path, crt, old):
 
 while current_date <= end_date:
     date_time = current_date.strftime("%Y-%m-%d %H:%M:%S")
-    old_date_time = current_date - datetime.timedelta(hours=1)
-    year, month, day, hour = str(current_date.year), date_time[5:7], current_date.strftime("%-d"), date_time[11:13]
+    old_date_time = current_date - datetime.timedelta(hours=measured_timedelta)
+    year, month, day, hour = str(current_date.year), date_time[5:7], str(current_date.day), date_time[11:13]
 
     try:
         os.mkdir(data_save_path + year)
@@ -57,4 +58,4 @@ while current_date <= end_date:
     except Exception as e:
         print("An error occurred:", e)
     
-    current_date += datetime.timedelta(hours=1)
+    current_date += datetime.timedelta(hours=measured_timedelta)
